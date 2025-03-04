@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy to Clipboard</title>
+    <script>
+        function copyToClipboard() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const text = urlParams.get("text");
+            navigator.clipboard.writeText(text).then(() => {
+                alert("✅ URL copied to clipboard!");
+                setTimeout(() => {
+                    if (window.Telegram.WebApp) {
+                        window.Telegram.WebApp.close(); // Close Telegram WebApp
+                    }
+                }, 500);
+            }).catch(err => {
+                alert("⚠️ Failed to copy URL.");
+                console.error("Copy Error:", err);
+            });
+        }
+    </script>
+</head>
+<body onload="copyToClipboard()">
+</body>
+</html>
