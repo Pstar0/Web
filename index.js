@@ -1,15 +1,27 @@
 import express from "express";
-import path from "path";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve the HTML file
-app.get("/", (req, res) => {
-    res.sendFile(path.resolve("index.html"));
+app.get("/copy-url", (req, res) => {
+    const text = req.query.text || "No URL Provided";
+    res.send(`
+        <script>
+            navigator.clipboard.writeText("${text}").then(() => {
+                alert("✅ 𝗘𝗦 𝗧𝗘𝗔𝗠𝗦 𝗩1 𝗨𝗥𝗟 𝗖𝗢𝗣𝗜𝗘𝗗 !");
+                setTimeout(() => {
+                    if (window.Telegram?.WebApp) {
+                        window.Telegram.WebApp.close();
+                    }
+                }, 500);
+            }).catch(err => {
+                alert("⚠️ Failed to copy URL.");
+                console.error("Copy Error:", err);
+            });
+        </script>
+    `);
 });
 
-// Start server
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(\`Server is running on http://localhost:\${PORT}\`);
 });
