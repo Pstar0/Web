@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy to Clipboard</title>
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const text = urlParams.get("text") || "No URL Provided";
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert("✅ 𝗘𝗦 𝗧𝗘𝗔𝗠𝗦 𝗩1 𝗨𝗥𝗟 𝗖𝗢𝗣𝗜𝗘𝗗!");
+                setTimeout(() => {
+                    if (window.Telegram?.WebApp) {
+                        window.Telegram.WebApp.close(); // Close Telegram WebApp
+                    }
+                }, 500);
+            }).catch(err => {
+                alert("⚠️ Failed to copy URL.");
+                console.error("Copy Error:", err);
+            });
+        };
+    </script>
+</head>
+<body>
+</body>
+</html>
