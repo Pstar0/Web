@@ -5,22 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Copy to Clipboard</title>
     <script>
-        window.onload = function() {
+        function copyText() {
             const urlParams = new URLSearchParams(window.location.search);
             const text = urlParams.get("text") || "No URL Provided";
-            
-            navigator.clipboard.writeText(text).then(() => {
-                alert("✅ 𝗘𝗦 𝗧𝗘𝗔𝗠𝗦 𝗩1 𝗨𝗥𝗟 𝗖𝗢𝗣𝗜𝗘𝗗!");
-                setTimeout(() => {
-                    if (window.Telegram?.WebApp) {
-                        window.Telegram.WebApp.close(); // Close Telegram WebApp
-                    }
-                }, 500);
-            }).catch(err => {
-                alert("⚠️ Failed to copy URL.");
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert("✅ URL copied to clipboard!");
+                    setTimeout(() => {
+                        if (window.Telegram?.WebApp) {
+                            window.Telegram.WebApp.close();
+                        }
+                    }, 500);
+                }).catch(err => {
+                    console.error("Copy Error:", err);
+                    showFallbackCopy(text);
+                });
+            } else {
+                showFallbackCopy(text);
+            }
+        }
+
+        function showFallbackCopy(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand("copy");
+                alert("✅ URL copied to clipboard!");
+            } catch (err) {
+                alert("⚠️ Failed to copy URL. Please copy manually.");
                 console.error("Copy Error:", err);
-            });
-        };
+            }
+            document.body.removeChild(textArea);
+            setTimeout(() => {
+                if (window.Telegram?.WebApp) {
+                    window.Telegram.WebApp.close();
+                }
+            }, 500);
+        }
+
+        window.onload = copyText;
     </script>
 </head>
 <body>
